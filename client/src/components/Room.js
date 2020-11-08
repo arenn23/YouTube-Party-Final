@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io('5000');
+  socket = io('https://youtube-party-23.herokuapp.com/5000');
   videoEnded = true;
   index = -1;
   constructor(props) {
