@@ -80,12 +80,12 @@ class Room extends Component {
     }
   };
 
- handlePlay = () => {
-    console.log('play')
-    this.setState({playing:true})
-    this.socket.emit('play', {play: true})
-    this.setState({time: (new Date().getTime())})
-   }
+// handlePlay = () => {
+  //  console.log('play')
+    //this.setState({playing:true})
+   // this.socket.emit('play', {play: true})
+   // this.setState({time: (new Date().getTime())})
+  // }
 
 
  handlePause = () => {
