@@ -1,0 +1,113 @@
+body {
+  background-color: black;
+}
+
+.jumbotron {
+  background-color: #ff4136 !important;
+  height: 170px;
+  margin-bottom: 0px !important;
+}
+
+.jumbotron h1 {
+  display: inline;
+  margin-left: 1.75rem;
+}
+
+.jumbotron span {
+  color: white;
+}
+
+img {
+  height: 80px;
+}
+
+.blackBar {
+  background-color: #121212;
+  height: 40px;
+}
+
+.google {
+  height: auto;
+}
+
+@media only screen and (max-width: 991px) {
+  .jumbotron {
+    height: 225px;
+  }
+  #roomName {
+    margin-top: 2rem;
+  }
+}
+
+.site-footer {
+  background-image: linear-gradient(#262833, #ff4136);
+  padding: 20px 0px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+i {
+  color: white;
+}
+
+a {
+  color: white;
+}
+
+a:hover {
+  color: white;
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 760px) {
+  #tables {
+    margin-bottom: 5px;
+  }
+}
+
+@media only screen and (min-width: 761px) {
+  #tables {
+    margin-bottom: 100px;
+  }
+}
+
+html {
+  overflow-y: scroll;
+}
+
+Label,
+h3,
+th,
+td {
+  color: white;
+}
+
+div.disabled {
+  overflow-x: hidden;
+}
+
+.player-wrapper {
+  position: relative;
+  padding-top: 56.25%; /* Player ratio: 100 / (1280 / 720) */
+}
+
+.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.list-group-queue {
+  position: relative;
+  margin-top: 10px;
+  max-width: 100%;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+.player-wrapper-small {
+  position: relative;
+  width: 14.222vw;
+  height: 8vw;
+}
