@@ -19,7 +19,7 @@ else fileLoc = path.join(__dirname + '/client/public/index.html');
 
 
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(fileLoc)
 });
 
