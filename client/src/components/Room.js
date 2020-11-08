@@ -20,7 +20,7 @@ class Room extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playing: true,
+      playing: false,
       played: 0,
       upcomingSongs: [],
       newSong: "",
@@ -46,6 +46,10 @@ class Room extends Component {
 
     this.socket.emit('syncQueue', {queue: [...this.state.upcomingSongs, this.state.newSong]})
     
+  }
+
+  handleOnReady = () => {
+
   }
 
   handleInputChange = (event) => {
@@ -173,6 +177,7 @@ this.socket.on('ended', msg =>{
               handlePlay = {this.handlePlay}
               handleSeek = {this.handleSeek}
               handlePause = {this.handlePause}
+              playerReady = {this.handleOnReady}
             />
           </div>
         </div>
