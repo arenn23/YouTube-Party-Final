@@ -10,7 +10,7 @@ class Player extends Component {
       <ReactPlayer
         onProgress={this.props.sync}
         ref={player => { this.player = player; this.props.getreference(player); }}
-        muted={false}
+        muted={true}
         onPlay={this.props.handlePlay}
         onPause={this.props.handlePause}
         onEnded={this.props.handleEnded}

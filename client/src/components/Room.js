@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io();
+  socket = io("localhost:5000");
   videoEnded = true;
   index = -1;
   constructor(props) {
@@ -82,9 +82,9 @@ class Room extends Component {
 
  handlePlay = () => {
     console.log('play')
-   // this.setState({playing:true})
-   // this.socket.emit('play', {play: true})
-    //this.setState({time: (new Date().getTime())})
+    this.setState({playing:true})
+    this.socket.emit('play', {play: true})
+    this.setState({time: (new Date().getTime())})
    }
 
 
