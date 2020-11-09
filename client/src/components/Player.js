@@ -4,12 +4,6 @@ import ReactPlayer from "react-player";
 class Player extends Component {
 
   
- handlePlay = () => {
-  console.log('play')
- // this.setState({playing:true})
- // this.socket.emit('play', {play: true})
- // this.setState({time: (new Date().getTime())})
- }
 
   render() {
     return (
@@ -17,7 +11,7 @@ class Player extends Component {
         onProgress={this.props.sync}
         ref={player => { this.player = player; this.props.getreference(player); }}
         muted={false}
-        onPlay={this.handlePlay}
+        onPlay={this.props.handlePlay}
         onPause={this.props.handlePause}
         onEnded={this.props.handleEnded}
         onReady={this.props.playerReady}

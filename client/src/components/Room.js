@@ -14,13 +14,13 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io();
+  socket = io('localhost:5000');
   videoEnded = true;
   index = -1;
   constructor(props) {
     super(props);
     this.state = {
-      playing: false,
+      playing: true,
       played: 0,
       upcomingSongs: [],
       newSong: "",
@@ -80,12 +80,12 @@ class Room extends Component {
     }
   };
 
-// handlePlay = () => {
-  //  console.log('play')
-    //this.setState({playing:true})
-   // this.socket.emit('play', {play: true})
-   // this.setState({time: (new Date().getTime())})
-  // }
+ handlePlay = () => {
+    console.log('play')
+    this.setState({playing:true})
+    this.socket.emit('play', {play: true})
+    this.setState({time: (new Date().getTime())})
+   }
 
 
  handlePause = () => {
