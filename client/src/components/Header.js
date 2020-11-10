@@ -29,7 +29,7 @@ function Header(props) {
             </div>
             <div id="roomName" className="col-lg-6">
               {props.feedbackForm.roomName && location.pathname === "/room" ? (
-                <h2>
+                <h2 id="roomHeader">
                   Hello! Welcome to the{" "}
                   <span> {props.feedbackForm.roomName}</span> Room
                 </h2>

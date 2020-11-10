@@ -40,9 +40,14 @@ io.on('connection', (socket) => {
     if (!(id in connectedRooms)){
       connectedRooms[id] = {}
       connectedRooms[id].roomies = []
+      connectedRooms[id].socketRoomie = []
 
     }
     connectedRooms[id].roomies.push(msg.roomies)
+    var socketID = socket.id
+    var connectedRoomiesLength = connectedRooms[id].roomies[connectedRooms[id].roomies.length - 1]
+    connectedRooms[id].socketRoomie.push({[socketID] : connectedRoomiesLength})
+    console.log(connectedRooms[id].socketRoomie)
     console.log(connectedRooms[id].roomies)
     io.in(`Room #${id}`).emit('syncRoomies', {roomies: connectedRooms[id].roomies})
     if (!(connectedRooms[id].queue === undefined)){
@@ -96,6 +101,32 @@ socket.on('ended',  msg => {
   const id = mapSocket[socket.id]
   connectedRooms[id].currURL = msg.currURL
   io.in(`Room #${id}`).emit('loadFromQueue', connectedRooms[id].currURL);
+})
+
+socket.on('disconnect', () => { 
+  try {
+      const id = mapSocket[socket.id];
+      console.log(connectedRooms[id].socketRoomie)
+      let roomies = connectedRooms[id].roomies;
+      for (i = 0; i < connectedRooms[id].socketRoomie.length; i++) {
+        var x = connectedRooms[id].socketRoomie[i]
+        console.log(Object.keys(x)[0])
+        if (Object.keys(x)[0] === socket.id){
+          var index = roomies.indexOf(Object.values(x)[0])
+          index > -1 ? roomies.splice(index , 1): false
+        }
+      }
+      console.log(roomies)
+      console.log(roomies.length)
+      if( roomies.length === 0){
+        io.in(`Room #${id}`).emit('resetRoom', msg);
+      }
+      io.in(`Room #${id}`).emit('syncRoomies', {roomies: connectedRooms[id].roomies});
+  }
+  catch (err) {
+      console.log(`Socket ${socket.id} not found`)
+  }
+  console.log(`Disconnected with ${socket.id}`);
 })
 
 })

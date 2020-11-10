@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io();
+  socket = io("localhost:5000");
   videoEnded = true;
   index = -1;
   constructor(props) {
@@ -115,7 +115,7 @@ sync = status => {
        this.setState({currURL: msg.msg.currURL})
      }
      if(msg.msg.time > this.state.time){
-     if (Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) > 2){
+     if (Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) > 5){
         this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds))
         this.setState(msg)
      }}
@@ -136,6 +136,11 @@ this.socket.on('play', msg =>{
 
 this.socket.on('ended', msg =>{
   this.setState({currURL: msg.currURL})
+})
+
+this.socket.on('resetRoom' , msg => {
+  this.setState({upcomingSongs: []})
+  this.setState({currURL: "https://www.youtube.com/watch?v=s21zOyyaBxM&t"})
 })
 
 }

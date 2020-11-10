@@ -35,6 +35,19 @@ img {
   }
 }
 
+@media only screen and (max-width: 401px) {
+  #roomHeader {
+    font-size: 1.25rem;
+    margin-top: 5px;
+  }
+  .jumbotron {
+    height: 250px;
+  }
+  .jumbotron h1 {
+    margin-bottom: 5px;
+  }
+}
+
 .site-footer {
   background-image: linear-gradient(#262833, #ff4136);
   padding: 20px 0px;
