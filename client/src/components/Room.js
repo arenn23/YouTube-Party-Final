@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io("localhost:5000");
+  socket = io();
   videoEnded = true;
   index = -1;
   constructor(props) {
