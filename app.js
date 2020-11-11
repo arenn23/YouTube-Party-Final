@@ -49,6 +49,9 @@ io.on('connection', (socket) => {
     connectedRooms[id].socketRoomie.push({[socketID] : connectedRoomiesLength})
     console.log(connectedRooms[id].socketRoomie)
     console.log(connectedRooms[id].roomies)
+    if( connectedRooms[id].roomies === 0){
+      io.in(`Room #${id}`).emit('resetRoom', msg);
+    }
     io.in(`Room #${id}`).emit('syncRoomies', {roomies: connectedRooms[id].roomies})
     if (!(connectedRooms[id].queue === undefined)){
     io.in(`Room #${id}`).emit('syncQueue', connectedRooms[id]);
@@ -118,9 +121,6 @@ socket.on('disconnect', () => {
       }
       console.log(roomies)
       console.log(roomies.length)
-      if( roomies.length === 0){
-        io.in(`Room #${id}`).emit('resetRoom', msg);
-      }
       io.in(`Room #${id}`).emit('syncRoomies', {roomies: connectedRooms[id].roomies});
   }
   catch (err) {
