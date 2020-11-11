@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
     connectedRooms[id].socketRoomie.push({[socketID] : connectedRoomiesLength})
     console.log(connectedRooms[id].socketRoomie)
     console.log(connectedRooms[id].roomies)
-    if( connectedRooms[id].roomies === 0){
+    if( connectedRooms[id].roomies === 1){
       io.in(`Room #${id}`).emit('resetRoom', msg);
     }
     io.in(`Room #${id}`).emit('syncRoomies', {roomies: connectedRooms[id].roomies})
