@@ -132,8 +132,8 @@ class Room extends Component {
         Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) > 8
       ) {
         this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds));
+        this.setState(msg);
       }
-      this.setState(msg);
     });
 
     this.socket.on("loadFromQueue", (msg) => {
