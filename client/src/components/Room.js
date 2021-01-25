@@ -127,7 +127,7 @@ class Room extends Component {
       if (msg.msg.time > this.state.time) {
         if (
           Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) >
-          2
+          10
         ) {
           this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds));
           this.setState(msg);
