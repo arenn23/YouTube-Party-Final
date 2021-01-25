@@ -119,7 +119,7 @@ class Room extends Component {
       this.setState({ upcomingSongs: msg.queue });
     });
 
-    this.socket.on("syncStat", (msg) => {
+    this.socket.on("sync", (msg) => {
       console.log(msg);
       msg.msg.status.playedSeconds =
         msg.msg.status.playedSeconds +
@@ -135,7 +135,7 @@ class Room extends Component {
       ) {
         this.player.seekTo(parseFloat(msg.msg.status.playedSeconds));
       }
-      this.setState(msg);
+      this.setState(msg.status);
     });
 
     this.socket.on("loadFromQueue", (msg) => {

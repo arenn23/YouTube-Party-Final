@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
     try {
       const id = mapSocket[socket.id];
       msg.ts = new Date().getTime();
-      socket.to(`Room #${id}`).emit("syncStat", { msg });
+      socket.to(`Room #${id}`).emit("sync", { msg });
     } catch {}
   });
 
