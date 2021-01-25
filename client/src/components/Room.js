@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io("http://localhost:5000");
+  socket = io();
   videoEnded = true;
   index = -1;
   constructor(props) {
@@ -93,7 +93,7 @@ class Room extends Component {
   };
 
   sync = (status) => {
-    this.setState(status, () => this.socket.emit("sync", { status: status }));
+    this.setState(status, () => this.socket.emit("sync", { status }));
   };
 
   componentDidMount = () => {
