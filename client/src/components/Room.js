@@ -27,14 +27,13 @@ class Room extends Component {
       currURL: "https://www.youtube.com/watch?v=s21zOyyaBxM&t",
       playlistIndex: -1,
       alerts: {},
-      roomies:[],
-      time: 0
+      roomies: [],
+      time: 0,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
 
   handleSubmit(event) {
     event.preventDefault();
@@ -44,13 +43,12 @@ class Room extends Component {
       newSong: "",
     });
 
-    this.socket.emit('syncQueue', {queue: [...this.state.upcomingSongs, this.state.newSong]})
-    
+    this.socket.emit("syncQueue", {
+      queue: [...this.state.upcomingSongs, this.state.newSong],
+    });
   }
 
-  handleOnReady = () => {
-
-  }
+  handleOnReady = () => {};
 
   handleInputChange = (event) => {
     const target = event.target;
@@ -66,7 +64,9 @@ class Room extends Component {
     this.setState({
       currURL: this.state.upcomingSongs[index],
     });
-    this.socket.emit('loadFromQueue', {song: this.state.upcomingSongs[index]})
+    this.socket.emit("loadFromQueue", {
+      song: this.state.upcomingSongs[index],
+    });
   };
 
   handleEnded = () => {
@@ -76,81 +76,94 @@ class Room extends Component {
       this.setState({
         currURL: this.state.upcomingSongs[pos + 1],
       });
-      this.socket.emit('ended', {currURL: this.state.currURL})
+      this.socket.emit("ended", { currURL: this.state.currURL });
     }
   };
 
- handlePlay = () => {
-    console.log('play')
-    this.setState({playing:true})
-    this.socket.emit('play', {play: true})
-    this.setState({time: (new Date().getTime())})
-   }
+  handlePlay = () => {
+    console.log("play");
+    this.setState({ playing: true });
+    this.socket.emit("play", { play: true });
+    this.setState({ time: new Date().getTime() });
+  };
 
+  handlePause = () => {
+    console.log("pause");
+    this.socket.emit("pause", { pause: false });
+  };
 
- handlePause = () => {
-   console.log('pause')
-   this.socket.emit('pause', {pause: false})
-}
-
-sync = status => {
-  this.setState(status, () => this.socket.emit('sync', status))
-  this.socket.emit('syncStatus', {syncStat: status, currURL: this.state.currURL, playing: this.state.playing, time: this.state.time})
-}
+  sync = (status) => {
+    this.setState(status, () => this.socket.emit("sync", status));
+    this.socket.emit("syncStatus", {
+      syncStat: status,
+      currURL: this.state.currURL,
+      playing: this.state.playing,
+      time: this.state.time,
+    });
+  };
 
   componentDidMount = () => {
-    this.socket.emit('register', { id: this.props.feedbackForm.roomName, roomies: this.props.feedbackForm.username})
-
-    this.socket.on('syncRoomies', msg => {
-      console.log(msg)
-      this.setState({ roomies: msg.roomies })
-    })
-  
-   this.socket.on('syncQueue', msg => {
-    this.setState({ upcomingSongs: msg.queue })
+    this.socket.emit("register", {
+      id: this.props.feedbackForm.roomName,
+      roomies: this.props.feedbackForm.username,
     });
 
-   this.socket.on('syncStat', msg => {
-     if((!(this.state.currURL === msg.msg.currURL )) && (this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t") ){
-       this.setState({currURL: msg.msg.currURL})
-     }
-     if(msg.msg.time > this.state.time){
-     if (Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) > 5){
-        this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds))
-        this.setState(msg)
-     }}
-     this.setState(msg)
-   })
-   
-this.socket.on('loadFromQueue', msg => {
-  this.setState({currURL: msg})
-})
+    this.socket.on("syncRoomies", (msg) => {
+      console.log(msg);
+      this.setState({ roomies: msg.roomies });
+    });
 
-this.socket.on('pause', msg =>{
- this.setState({playing: msg.pause})
-})
+    this.socket.on("syncQueue", (msg) => {
+      this.setState({ upcomingSongs: msg.queue });
+    });
 
-this.socket.on('play', msg =>{
-  this.setState({playing: msg.play})
-})
+    this.socket.on("syncStat", (msg) => {
+      if (
+        !(this.state.currURL === msg.msg.currURL) &&
+        this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
+      ) {
+        this.setState({ currURL: msg.msg.currURL });
+      }
+      if (msg.msg.time > this.state.time) {
+        if (
+          Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) >
+          2
+        ) {
+          this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds));
+          this.setState(msg);
+        }
+      }
+      this.setState(msg);
+    });
 
-this.socket.on('ended', msg =>{
-  this.setState({currURL: msg.currURL})
-})
+    this.socket.on("loadFromQueue", (msg) => {
+      this.setState({ currURL: msg });
+    });
 
-this.socket.on('resetRoom' , msg => {
-  this.setState({upcomingSongs: []})
-  this.setState({currURL: "https://www.youtube.com/watch?v=s21zOyyaBxM&t"})
-})
+    this.socket.on("pause", (msg) => {
+      this.setState({ playing: msg.pause });
+    });
 
-}
+    this.socket.on("play", (msg) => {
+      this.setState({ playing: msg.play });
+    });
+
+    this.socket.on("ended", (msg) => {
+      this.setState({ currURL: msg.currURL });
+    });
+
+    this.socket.on("resetRoom", (msg) => {
+      this.setState({ upcomingSongs: [] });
+      this.setState({
+        currURL: "https://www.youtube.com/watch?v=s21zOyyaBxM&t",
+      });
+    });
+  };
 
   render() {
     return (
       <>
-        <Header 
-          roomies={this.state.roomies}
-        />
+        <Header roomies={this.state.roomies} />
         <div className="container">
           <div className="row justify-content-center">
             <Form className="mt-2 mb-2" inline onSubmit={this.handleSubmit}>
@@ -175,14 +188,14 @@ this.socket.on('resetRoom' , msg => {
               currURL={this.state.currURL}
               handleEnded={this.handleEnded}
               sync={this.sync}
-              playing = {this.state.playing}
-              played = {this.state.played}
+              playing={this.state.playing}
+              played={this.state.played}
               getreference={this.refPlayer}
               handleLoadClick={this.handleLoadClick}
-              handlePlay = {this.handlePlay}
-              handleSeek = {this.handleSeek}
-              handlePause = {this.handlePause}
-              playerReady = {this.handleOnReady}
+              handlePlay={this.handlePlay}
+              handleSeek={this.handleSeek}
+              handlePause={this.handlePause}
+              playerReady={this.handleOnReady}
             />
           </div>
         </div>
@@ -194,8 +207,7 @@ this.socket.on('resetRoom' , msg => {
       </>
     );
   }
-  refPlayer = player => this.player = player;
- 
+  refPlayer = (player) => (this.player = player);
 }
 
 export default withRouter(connect(mapStateToProps)(Room));
