@@ -93,7 +93,9 @@ class Room extends Component {
   };
 
   sync = (status) => {
-    this.setState(status, () => this.socket.emit("sync", status));
+    this.setState(status, () =>
+      this.socket.emit("sync", { status: status, currURL: this.state.currURL })
+    );
     this.socket.emit("syncStatus", {
       syncStat: status,
       currURL: this.state.currURL,
@@ -119,8 +121,8 @@ class Room extends Component {
 
     this.socket.on("syncStat", (msg) => {
       console.log(msg);
-      msg.msg.syncStat.playedSeconds =
-        msg.msg.syncStat.playedSeconds +
+      msg.msg.status.playedSeconds =
+        msg.msg.status.playedSeconds +
         (new Date().getTime() - msg.msg.ts) / 1000;
       if (
         !(this.state.currURL === msg.msg.currURL) &&
@@ -129,11 +131,11 @@ class Room extends Component {
         this.setState({ currURL: msg.msg.currURL });
       }
       if (
-        Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) > 8
+        Math.abs(this.state.playedSeconds - msg.msg.status.playedSeconds) > 2
       ) {
-        this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds));
-        this.setState(msg);
+        this.player.seekTo(parseFloat(msg.msg.status.playedSeconds));
       }
+      this.setState(msg);
     });
 
     this.socket.on("loadFromQueue", (msg) => {

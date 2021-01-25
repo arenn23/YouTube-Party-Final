@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("syncStatus", (msg) => {
+  socket.on("sync", (msg) => {
     try {
       const id = mapSocket[socket.id];
       msg.ts = new Date().getTime();
