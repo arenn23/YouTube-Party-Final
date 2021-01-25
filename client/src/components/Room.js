@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io();
+  socket = io("http://localhost:5000");
   videoEnded = true;
   index = -1;
   constructor(props) {
@@ -118,20 +118,21 @@ class Room extends Component {
     });
 
     this.socket.on("syncStat", (msg) => {
+      console.log(msg);
+      msg.msg.syncStat.playedSeconds =
+        msg.msg.syncStat.playedSeconds +
+        (new Date().getTime() - msg.msg.ts) / 1000;
       if (
         !(this.state.currURL === msg.msg.currURL) &&
         this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
       ) {
         this.setState({ currURL: msg.msg.currURL });
       }
-      if (msg.msg.time > this.state.time) {
-        if (
-          Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) >
-          10
-        ) {
-          this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds));
-          this.setState(msg);
-        }
+      if (
+        Math.abs(this.state.playedSeconds - msg.msg.syncStat.playedSeconds) > 2
+      ) {
+        this.player.seekTo(parseFloat(msg.msg.syncStat.playedSeconds));
+        this.setState(msg);
       }
       this.setState(msg);
     });

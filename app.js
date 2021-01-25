@@ -63,6 +63,7 @@ io.on("connection", (socket) => {
   socket.on("syncStatus", (msg) => {
     try {
       const id = mapSocket[socket.id];
+      msg.ts = new Date().getTime();
       socket.to(`Room #${id}`).emit("syncStat", { msg });
     } catch {}
   });
