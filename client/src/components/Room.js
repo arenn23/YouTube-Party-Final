@@ -131,7 +131,7 @@ class Room extends Component {
         this.setState({ currURL: msg.msg.currURL });
       }
       if (
-        Math.abs(this.state.playedSeconds - msg.msg.status.playedSeconds) > 2
+        Math.abs(this.state.playedSeconds - msg.msg.status.playedSeconds) > 10
       ) {
         this.player.seekTo(parseFloat(msg.msg.status.playedSeconds));
       }
