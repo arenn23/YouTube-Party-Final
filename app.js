@@ -44,28 +44,39 @@ io.on("connection", (socket) => {
     var socketID = socket.id;
     var connectedRoomiesLength =
       connectedRooms[id].roomies[connectedRooms[id].roomies.length - 1];
+
     connectedRooms[id].socketRoomie.push({
       [socketID]: connectedRoomiesLength,
     });
+
     console.log(connectedRooms[id].socketRoomie);
     console.log(connectedRooms[id].roomies);
+
+    socket.emit("sync", connectedRooms[id]);
     if (connectedRooms[id].roomies === 1) {
       io.in(`Room #${id}`).emit("resetRoom", msg);
     }
+
     io.in(`Room #${id}`).emit("syncRoomies", {
       roomies: connectedRooms[id].roomies,
     });
+
     if (!(connectedRooms[id].queue === undefined)) {
       io.in(`Room #${id}`).emit("syncQueue", connectedRooms[id]);
     }
   });
 
   socket.on("sync", (msg) => {
+    const id = mapSocket[socket.id];
     try {
-      const id = mapSocket[socket.id];
-      msg.ts = new Date().getTime();
-      socket.to(`Room #${id}`).emit("sync", { msg });
-    } catch {}
+      for (const key in msg) {
+        connectedRooms[id][key] = msg[key];
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    connectedRooms[id].ts = new Date().getTime();
+    socket.to(`Room #${id}`).emit("sync", { msg: connectedRooms[id] });
   });
 
   socket.on("pause", (msg) => {
@@ -116,6 +127,7 @@ io.on("connection", (socket) => {
       const id = mapSocket[socket.id];
       console.log(connectedRooms[id].socketRoomie);
       let roomies = connectedRooms[id].roomies;
+
       for (i = 0; i < connectedRooms[id].socketRoomie.length; i++) {
         var x = connectedRooms[id].socketRoomie[i];
         console.log(Object.keys(x)[0]);
@@ -124,6 +136,7 @@ io.on("connection", (socket) => {
           index > -1 ? roomies.splice(index, 1) : false;
         }
       }
+
       console.log(roomies);
       console.log(roomies.length);
       io.in(`Room #${id}`).emit("syncRoomies", {

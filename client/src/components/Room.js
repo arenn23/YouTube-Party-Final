@@ -92,8 +92,12 @@ class Room extends Component {
     this.socket.emit("pause", { pause: false });
   };
 
+  handleLoadClick = () => {};
+
   sync = (status) => {
-    this.setState(status, () => this.socket.emit("sync", { status }));
+    this.setState(status, () =>
+      this.socket.emit("sync", { status: status, currURL: this.state.currURL })
+    );
   };
 
   componentDidMount = () => {
@@ -113,16 +117,33 @@ class Room extends Component {
 
     this.socket.on("sync", (msg) => {
       console.log(msg);
-      msg.msg.status.playedSeconds =
-        msg.msg.status.playedSeconds +
-        (new Date().getTime() - msg.msg.ts) / 1000;
+      if (msg.msg !== undefined) {
+        var minus =
+          msg.msg.status.playedSeconds +
+          (new Date().getTime() - msg.msg.ts) / 1000;
 
-      if (
-        Math.abs(this.state.playedSeconds - msg.msg.status.playedSeconds) > 10
-      ) {
-        this.player.seekTo(parseFloat(msg.msg.status.playedSeconds));
+        if (
+          !(this.state.currURL === msg.msg.currURL) &&
+          this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
+        ) {
+          this.setState({ currURL: msg.msg.currURL });
+        }
+        try {
+          if (
+            this.player.getInternalPlayer() &&
+            this.player.getInternalPlayer().getPlaylistIndex() !==
+              msg.playlistIndex &&
+            msg.playlistIndex !== -1
+          )
+            this.player.getInternalPlayer().playVideoAt(msg.playlistIndex);
+        } catch (err) {
+          console.log(`Internal Player Error ${err.stack}`);
+        }
+        if (Math.abs(this.state.playedSeconds - minus) > 10) {
+          this.player.seekTo(parseFloat(msg.msg.status.playedSeconds));
+        }
       }
-      this.setState(msg.status);
+      this.setState(msg.msg);
     });
 
     this.socket.on("loadFromQueue", (msg) => {
