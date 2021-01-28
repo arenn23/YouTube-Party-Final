@@ -81,10 +81,10 @@ class Room extends Component {
       this.state.upcomingSongs.length > 0 &&
       this.state.currURL !== "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
     ) {
-      this.state.upcomingSongs.splice(pos, 1);
       this.setState({
-        currURL: this.state.upcomingSongs[pos],
+        currURL: this.state.upcomingSongs[pos + 1],
       });
+      this.state.upcomingSongs.splice(pos, 1);
     }
     if (
       this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
