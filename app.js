@@ -68,15 +68,13 @@ io.on("connection", (socket) => {
 
   socket.on("sync", (msg) => {
     const id = mapSocket[socket.id];
-    try {
-      for (const key in msg) {
-        connectedRooms[id][key] = msg[key];
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    connectedRooms[id].ts = new Date().getTime();
-    socket.to(`Room #${id}`).emit("sync", { msg: connectedRooms[id] });
+    msg.ts = new Date().getTime();
+    socket.to(`Room #${id}`).emit("sync", { msg });
+  });
+
+  socket.on("currURL", (msg) => {
+    const id = mapSocket[socket.id];
+    socket.to(`Room #${id}`).emit("currURL", { msg });
   });
 
   socket.on("pause", (msg) => {
@@ -97,8 +95,12 @@ io.on("connection", (socket) => {
   socket.on("play", (msg) => {
     const id = mapSocket[socket.id];
     if (msg) {
-      connectedRooms[id].play = msg.play;
-      socket.to(`Room #${id}`).emit("play", { play: connectedRooms[id].play });
+      if (connectedRooms[id] !== undefined) {
+        connectedRooms[id].play = msg.play;
+        socket
+          .to(`Room #${id}`)
+          .emit("play", { play: connectedRooms[id].play });
+      }
     }
   });
 
@@ -111,15 +113,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("loadFromQueue", (msg) => {
+    console.log("hello");
     const id = mapSocket[socket.id];
-    connectedRooms[id].song = msg.song;
-    io.in(`Room #${id}`).emit("loadFromQueue", connectedRooms[id].song);
+
+    console.log("goodbye");
+
+    io.in(`Room #${id}`).emit("loadFromQueue", msg);
   });
 
   socket.on("ended", (msg) => {
     const id = mapSocket[socket.id];
     connectedRooms[id].currURL = msg.currURL;
-    io.in(`Room #${id}`).emit("loadFromQueue", connectedRooms[id].currURL);
+    connectedRooms[id].queue = msg.queue;
+    io.in(`Room #${id}`).emit("loadFromQueue", connectedRooms[id]);
   });
 
   socket.on("disconnect", () => {

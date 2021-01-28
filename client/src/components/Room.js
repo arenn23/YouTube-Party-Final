@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io("http://localhost:5000");
+  socket = io();
   videoEnded = true;
   index = -1;
   constructor(props) {
@@ -29,6 +29,7 @@ class Room extends Component {
       alerts: {},
       roomies: [],
       time: 0,
+      ts: 0,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -48,7 +49,9 @@ class Room extends Component {
     });
   }
 
-  handleOnReady = () => {};
+  handleProgress = (progress) => {
+    this.setState({ played: progress.playedSeconds });
+  };
 
   handleInputChange = (event) => {
     const target = event.target;
@@ -63,41 +66,42 @@ class Room extends Component {
     console.log(index);
     this.setState({
       currURL: this.state.upcomingSongs[index],
+      playlistIndex: index,
     });
     this.socket.emit("loadFromQueue", {
       song: this.state.upcomingSongs[index],
+      playlistIndex: index,
     });
   };
 
   handleEnded = () => {
     console.log("ended");
     var pos = this.state.upcomingSongs.indexOf(this.state.currURL);
-    if (pos > -1) {
+    if (
+      this.state.upcomingSongs.length > 0 &&
+      this.state.currURL !== "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
+    ) {
+      this.state.upcomingSongs.splice(pos, 1);
       this.setState({
-        currURL: this.state.upcomingSongs[pos + 1],
+        currURL: this.state.upcomingSongs[pos],
       });
-      this.socket.emit("ended", { currURL: this.state.currURL });
     }
+    if (
+      this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
+    ) {
+      this.setState({
+        currURL: this.state.upcomingSongs[0],
+      });
+    }
+    this.socket.emit("ended", {
+      currURL: this.state.currURL,
+      queue: this.state.upcomingSongs,
+    });
   };
-
-  handlePlay = () => {
-    console.log("play");
-    this.setState({ playing: true });
-    this.socket.emit("play", { play: true });
-    this.setState({ time: new Date().getTime() });
-  };
-
-  handlePause = () => {
-    console.log("pause");
-    this.socket.emit("pause", { pause: false });
-  };
-
-  handleLoadClick = () => {};
 
   sync = (status) => {
-    this.setState(status, () =>
-      this.socket.emit("sync", { status: status, currURL: this.state.currURL })
-    );
+    console.log(status.playing);
+    this.setState(status, () => this.socket.emit("sync", status));
   };
 
   componentDidMount = () => {
@@ -109,6 +113,10 @@ class Room extends Component {
     this.socket.on("syncRoomies", (msg) => {
       console.log(msg);
       this.setState({ roomies: msg.roomies });
+      this.setState({ playing: false });
+      this.setState({ playing: true });
+      this.setState({ playing: false });
+      this.setState({ playing: true });
     });
 
     this.socket.on("syncQueue", (msg) => {
@@ -118,36 +126,23 @@ class Room extends Component {
     this.socket.on("sync", (msg) => {
       console.log(msg);
       if (msg.msg !== undefined) {
-        var minus =
-          msg.msg.status.playedSeconds +
-          (new Date().getTime() - msg.msg.ts) / 1000;
-
         if (
           !(this.state.currURL === msg.msg.currURL) &&
           this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
         ) {
           this.setState({ currURL: msg.msg.currURL });
         }
-        try {
-          if (
-            this.player.getInternalPlayer() &&
-            this.player.getInternalPlayer().getPlaylistIndex() !==
-              msg.playlistIndex &&
-            msg.playlistIndex !== -1
-          )
-            this.player.getInternalPlayer().playVideoAt(msg.playlistIndex);
-        } catch (err) {
-          console.log(`Internal Player Error ${err.stack}`);
-        }
-        if (Math.abs(this.state.playedSeconds - minus) > 10) {
-          this.player.seekTo(parseFloat(msg.msg.status.playedSeconds));
-        }
+        msg.msg.played =
+          msg.msg.played + (new Date().getTime() - msg.msg.ts) / 1000;
+        if (Math.abs(this.state.played - msg.msg.played) > 2)
+          this.player.seekTo(parseFloat(msg.msg.played));
       }
       this.setState(msg.msg);
     });
 
     this.socket.on("loadFromQueue", (msg) => {
-      this.setState({ currURL: msg });
+      console.log("hello");
+      console.log(msg);
     });
 
     this.socket.on("pause", (msg) => {
@@ -159,7 +154,9 @@ class Room extends Component {
     });
 
     this.socket.on("ended", (msg) => {
+      console.log(msg);
       this.setState({ currURL: msg.currURL });
+      this.setState({ upcomingSongs: msg.queue });
     });
 
     this.socket.on("resetRoom", (msg) => {
@@ -206,6 +203,7 @@ class Room extends Component {
               handleSeek={this.handleSeek}
               handlePause={this.handlePause}
               playerReady={this.handleOnReady}
+              handleProgress={this.handleProgress}
             />
           </div>
         </div>
