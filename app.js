@@ -125,7 +125,7 @@ io.on("connection", (socket) => {
     const id = mapSocket[socket.id];
     connectedRooms[id].currURL = msg.currURL;
     connectedRooms[id].queue = msg.queue;
-    io.in(`Room #${id}`).emit("loadFromQueue", connectedRooms[id]);
+    io.in(`Room #${id}`).emit("ended", connectedRooms[id]);
   });
 
   socket.on("disconnect", () => {

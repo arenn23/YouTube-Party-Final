@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 
 class Room extends Component {
-  socket = io();
+  socket = io("http://localhost:5000");
   videoEnded = true;
   index = -1;
   constructor(props) {
@@ -81,10 +81,10 @@ class Room extends Component {
       this.state.upcomingSongs.length > 0 &&
       this.state.currURL !== "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
     ) {
-      this.setState({
-        currURL: this.state.upcomingSongs[pos + 1],
-      });
       this.state.upcomingSongs.splice(pos, 1);
+      this.setState({
+        currURL: this.state.upcomingSongs[pos],
+      });
     }
     if (
       this.state.currURL === "https://www.youtube.com/watch?v=s21zOyyaBxM&t"
@@ -141,8 +141,7 @@ class Room extends Component {
     });
 
     this.socket.on("loadFromQueue", (msg) => {
-      console.log("hello");
-      console.log(msg);
+      this.setState({ currURL: msg.song });
     });
 
     this.socket.on("pause", (msg) => {
