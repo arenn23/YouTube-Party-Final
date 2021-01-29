@@ -134,7 +134,9 @@ class Room extends Component {
         }
         msg.msg.played =
           msg.msg.played +
-          (new Date().getTime() + new Date().getTimezoneOffset() - msg.msg.ts) /
+          (new Date().getTime() +
+            new Date().getTimezoneOffset() * 60000 -
+            msg.msg.ts) /
             1000;
         if (Math.abs(this.state.played - msg.msg.played) > 2)
           this.player.seekTo(parseFloat(msg.msg.played));

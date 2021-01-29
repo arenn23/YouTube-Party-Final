@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
 
   socket.on("sync", (msg) => {
     const id = mapSocket[socket.id];
-    msg.ts = new Date().getTime() + new Date().getTimezoneOffset();
+    msg.ts = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
     socket.to(`Room #${id}`).emit("sync", { msg });
   });
 
