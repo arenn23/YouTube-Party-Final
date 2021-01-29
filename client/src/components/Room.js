@@ -124,7 +124,6 @@ class Room extends Component {
     });
 
     this.socket.on("sync", (msg) => {
-      console.log(msg);
       if (msg.msg !== undefined) {
         if (
           !(this.state.currURL === msg.msg.currURL) &&
@@ -133,11 +132,8 @@ class Room extends Component {
           this.setState({ currURL: msg.msg.currURL });
         }
         msg.msg.played =
-          msg.msg.played +
-          (new Date().getTime() +
-            new Date().getTimezoneOffset() * 60000 -
-            msg.msg.ts) /
-            1000;
+          msg.msg.played + (new Date().getTime() - msg.msg.ts) / 1000;
+        console.log(msg.msg.played);
         if (Math.abs(this.state.played - msg.msg.played) > 2)
           this.player.seekTo(parseFloat(msg.msg.played));
       }
