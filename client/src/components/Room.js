@@ -133,7 +133,9 @@ class Room extends Component {
           this.setState({ currURL: msg.msg.currURL });
         }
         msg.msg.played =
-          msg.msg.played + (new Date().getTime() - msg.msg.ts) / 1000;
+          msg.msg.played +
+          (new Date().getTime() + new Date().getTimezoneOffset() - msg.msg.ts) /
+            1000;
         if (Math.abs(this.state.played - msg.msg.played) > 2)
           this.player.seekTo(parseFloat(msg.msg.played));
       }
