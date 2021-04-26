@@ -21,6 +21,10 @@ class CreateRoom extends Component {
     this.props.history.push("/room");
   }
 
+  handleAlternate(e) {
+    this.props.history.push("/");
+  }
+
   render() {
     return (
       <>
@@ -96,13 +100,18 @@ class CreateRoom extends Component {
               <Button type="submit" size="lg" color="secondary">
                 Enter
               </Button>
+              <Link to="/createroom">
+                <Button
+                  onClick={this.handleAlternate.bind(this)}
+                  className="ml-5"
+                  size="lg"
+                  color="danger"
+                >
+                  Cancel
+                </Button>
+              </Link>
             </FormGroup>
           </Form>
-          <Link to="/createroom">
-            <Button className="ml-5" size="lg" color="danger">
-              Cancel
-            </Button>
-          </Link>
         </div>
         <Footer />
       </>
