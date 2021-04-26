@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { Link } from "react-router-dom";
 import { Control, Form, Errors } from "react-redux-form";
 import { Button, Label, Col, Row, FormGroup } from "reactstrap";
 import { withRouter } from "react-router-dom";
@@ -95,9 +96,11 @@ class CreateRoom extends Component {
               <Button type="submit" size="lg" color="secondary">
                 Enter
               </Button>
-              <Button className="ml-5" size="lg" color="danger">
-                Cancel
-              </Button>
+              <Link to="/createroom">
+                <Button className="ml-5" size="lg" color="danger">
+                  Cancel
+                </Button>
+              </Link>
             </FormGroup>
           </Form>
         </div>
