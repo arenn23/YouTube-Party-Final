@@ -100,16 +100,15 @@ class CreateRoom extends Component {
               <Button type="submit" size="lg" color="secondary">
                 Enter
               </Button>
-              <Link to="/createroom">
-                <Button
-                  onClick={this.handleAlternate.bind(this)}
-                  className="ml-5"
-                  size="lg"
-                  color="danger"
-                >
-                  Cancel
-                </Button>
-              </Link>
+
+              <Button
+                onClick={this.handleAlternate.bind(this)}
+                className="ml-5"
+                size="lg"
+                color="danger"
+              >
+                Cancel
+              </Button>
             </FormGroup>
           </Form>
         </div>
