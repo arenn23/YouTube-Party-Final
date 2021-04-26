@@ -96,13 +96,13 @@ class CreateRoom extends Component {
               <Button type="submit" size="lg" color="secondary">
                 Enter
               </Button>
-              <Link to="/createroom">
-                <Button className="ml-5" size="lg" color="danger">
-                  Cancel
-                </Button>
-              </Link>
             </FormGroup>
           </Form>
+          <Link to="/createroom">
+            <Button className="ml-5" size="lg" color="danger">
+              Cancel
+            </Button>
+          </Link>
         </div>
         <Footer />
       </>
