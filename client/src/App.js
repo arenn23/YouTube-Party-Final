@@ -13,6 +13,7 @@ class App extends Component {
       <Provider store={store}>
         <BrowserRouter>
           <div className="App">
+            {/* returns component with all routes in it */}
             <Routing />
           </div>
         </BrowserRouter>

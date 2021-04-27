@@ -2,11 +2,15 @@ import React, { Component } from "react";
 import ReactPlayer from "react-player";
 
 class Player extends Component {
+  //Fires when video is started or unpaused.
   handlePlay = () => {
     console.log(`onPlay`);
+
     if (this.props.playing === false) {
+      //Calls sync prop function to update the playing, played, and currURL state variable of parent component.
       this.props.sync({
         playing: true,
+        //getCurrentTime is a React Player method that allows access to curren time in video
         played: this.player.getCurrentTime(),
         currURL: this.props.currURL,
       });
@@ -14,6 +18,7 @@ class Player extends Component {
   };
 
   handlePause = () => {
+    //does the same thing as handleplay but pauses the video.
     console.log("pause");
     if (this.props.playing === true) {
       this.props.sync({
@@ -27,20 +32,20 @@ class Player extends Component {
   render() {
     return (
       <ReactPlayer
-        onProgress={this.props.sync}
         ref={(player) => {
           this.player = player;
           this.props.getreference(player);
         }}
         muted={true}
+        //Call back props made by React Player. Fire when certain actions occur.
+        //For example, onPlay fires when a video is started or unpaused. When the video is unpaused,
+        //the this.handlePlay function is called, which passes info back to parent component.
         onPlay={this.handlePlay}
         onPause={this.handlePause}
         onEnded={this.props.handleEnded}
-        onReady={this.props.playerReady}
         controls={true}
         playing={this.props.playing}
         url={this.props.currURL}
-        onSeek={this.props.handleSeek}
         onProgress={this.props.handleProgress}
       />
     );

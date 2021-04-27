@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import { Link } from "react-router-dom";
 import { Control, Form, Errors } from "react-redux-form";
 import { Button, Label, Col, Row, FormGroup } from "reactstrap";
 import { withRouter } from "react-router-dom";
 
+//Function to check if field is blank
 const required = (val) => val && val.length;
+//Function to check if field is greater than max length
 const maxLength = (len) => (val) => !val || val.length <= len;
+//Function to check if field is less than max length
 const minLength = (len) => (val) => val && val.length >= len;
 
 class CreateRoom extends Component {
@@ -45,12 +47,14 @@ class CreateRoom extends Component {
                   name="roomName"
                   placeholder="Room Name"
                   className="form-control"
+                  // call the validating functions above. Passes in min and max length as parameters
                   validators={{
                     required,
                     minLength: minLength(2),
                     maxLength: maxLength(15),
                   }}
                 />
+                {/* Gives errors that populate below the field after the user has touched the input field  */}
                 <Errors
                   className="text-danger"
                   model=".roomName"
@@ -100,7 +104,6 @@ class CreateRoom extends Component {
               <Button type="submit" size="lg" color="secondary">
                 Enter
               </Button>
-
               <Button
                 onClick={this.handleAlternate.bind(this)}
                 className="ml-5"
