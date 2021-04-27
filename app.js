@@ -89,7 +89,6 @@ io.on("connection", (socket) => {
     // mapSocket[socket.id1] = 'room1' Then everyone else in room1 will be emitted.
     const id = mapSocket[socket.id];
     //Created time stamp to get how much time has passed during data transfer. Allows all video to stay exactly synced.
-    msg.ts = new Date().getTime();
     console.log(msg);
     //emits data to room
     socket.to(`Room #${id}`).emit("sync", { msg });

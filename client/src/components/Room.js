@@ -174,8 +174,7 @@ class Room extends Component {
         //Updates the played seconds from the other client. This is correcting for the amount of real time
         //that has went by since the first client updated their player. Example: new Date.getTime() - msg.msg.ts
         //equals the amount of time that has passed between server sending data and this client receiving it.
-        msg.msg.played =
-          msg.msg.played + (new Date().getTime() - msg.msg.ts) / 1000;
+
         console.log(msg.msg.played);
         //If this state played seconds is different than the msg played seconds, then another client has updated their time.
         //State played seconds is updated to reflect change
