@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "engines": {
-    "npm": "16.17.1"
+    "node": "16.17.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
