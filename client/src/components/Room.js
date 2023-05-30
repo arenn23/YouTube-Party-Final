@@ -79,7 +79,6 @@ class Room extends Component {
   //Function that allows a video to be selected to play from the queue. Index is the array index of the song.
   //Passed as props to the Queue component
   handlePlayFromQueue = (index) => {
-    console.log(index);
     //Sets the currURL to the video. Updates playlistIndex with array index of current video.
     this.setState({
       currURL: this.state.upcomingSongs[index],
@@ -94,7 +93,6 @@ class Room extends Component {
 
   //Fires when video ends. Passed to Player component as props.
   handleEnded = () => {
-    console.log("ended");
     //Pos gives index of the current video in the upcomingSongs array
     var pos = this.state.upcomingSongs.indexOf(this.state.currURL);
     //checks to see if there are vidoes in the upcomingSongs array and checks to see if the current video is the default video.
@@ -127,7 +125,6 @@ class Room extends Component {
 
   //Sync is called when a video is paused or started.
   sync = (status) => {
-    console.log(status);
     //Updates the following state variables: playing, played, and currURL. Then, sends this data to the other clients.
     this.setState(status, () => this.socket.emit("sync", status));
   };
@@ -145,7 +142,6 @@ class Room extends Component {
 
     //Fires when another roommate enters the room. Updates roomies state variable with other roomies.
     this.socket.on("syncRoomies", (msg) => {
-      console.log(msg);
       this.setState({ roomies: msg.roomies });
       //Fires the sync function above a few times to make sure new roomie gets to the right video.
       this.setState({ playing: false });
@@ -171,11 +167,7 @@ class Room extends Component {
           //Updates to the new roomie with the correct URL of the other clients
           this.setState({ currURL: msg.msg.currURL });
         }
-        //Updates the played seconds from the other client. This is correcting for the amount of real time
-        //that has went by since the first client updated their player. Example: new Date.getTime() - msg.msg.ts
-        //equals the amount of time that has passed between server sending data and this client receiving it.
 
-        console.log(msg.msg.played);
         //If this state played seconds is different than the msg played seconds, then another client has updated their time.
         //State played seconds is updated to reflect change
         if (Math.abs(this.state.played - msg.msg.played) > 2)
@@ -193,7 +185,6 @@ class Room extends Component {
 
     //Fires when a video has ended on another client
     this.socket.on("ended", (msg) => {
-      console.log(msg);
       //Updates currURL to next video
       this.setState({ currURL: msg.currURL });
       //Updates the queue

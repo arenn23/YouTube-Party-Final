@@ -89,7 +89,6 @@ io.on("connection", (socket) => {
     // mapSocket[socket.id1] = 'room1' Then everyone else in room1 will be emitted.
     const id = mapSocket[socket.id];
     //Created time stamp to get how much time has passed during data transfer. Allows all video to stay exactly synced.
-    console.log(msg);
     //emits data to room
     socket.to(`Room #${id}`).emit("sync", { msg });
   });
@@ -111,11 +110,7 @@ io.on("connection", (socket) => {
 
   //Fires when client selects from queue for next video
   socket.on("loadFromQueue", (msg) => {
-    console.log("hello");
     const id = mapSocket[socket.id];
-
-    console.log("goodbye");
-
     io.in(`Room #${id}`).emit("loadFromQueue", msg);
   });
 
@@ -138,8 +133,6 @@ io.on("connection", (socket) => {
       for (i = 0; i < connectedRooms[id].socketRoomie.length; i++) {
         //X is the object inside the socketRoomie array at idex i
         var x = connectedRooms[id].socketRoomie[i];
-        //The below console.log shows the key of the object inside socketRoomie object at index i
-        console.log(Object.keys(x)[0]);
         //Checks to see if that key matches the socket.id of the person that just left
         if (Object.keys(x)[0] === socket.id) {
           //Gets index of roomie name in the roomies array
@@ -148,9 +141,6 @@ io.on("connection", (socket) => {
           index > -1 ? roomies.splice(index, 1) : false;
         }
       }
-
-      console.log(roomies);
-      console.log(roomies.length);
       //Updates the roomies that remained in the room with the updated spliced list.
       io.in(`Room #${id}`).emit("syncRoomies", {
         roomies: connectedRooms[id].roomies,
